@@ -1,0 +1,9 @@
+__pycache__
+*_stage_masks
+.vscode
+*.pth
+*.pb
+ssc_ris/refer_dataset/refer/data
+ssc_ris/refer_dataset/refer/test
+ssc_ris/refer_dataset/refer/*.ipynb
+*.egg-info
