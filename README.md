@@ -2,26 +2,10 @@
 
 ![Three-Stage Framework](diagram.png)
 
-This is the official repo for the paper [*Segment*, *Select*, *Correct*: A Framework for Weakly-Supervised Referring Image Segmentation]() or S+S+C for short (`ssc` in code). This repository is licensed under a GNU general public license (find more in LICENSE.txt).
+This is the official repo for the paper [*Segment*, *Select*, *Correct*: A Framework for Weakly-Supervised Referring Image Segmentation](https://arxiv.org/abs/2310.13479) or S+S+C for short (`ssc` in code). This repository is licensed under a GNU general public license (find more in LICENSE.txt).
 
-If you use `ssc` in your work, please cite the following:
-```
-Coming soon
-```
 
-## Getting started
-
-Getting started with this repo will depend on what you are interested in doing:
-- If you simply want to run pre-trained models, you can install the package using `pip`. Follow the instructions in step 1 to get started.
-- If you want to generate the masks from `Segment` (Stage 1), select them using the steps in `Select` (Stage 2) or pre-train/train a model using the greedy loss from `Correct` (Stage 3), then you must install the full package. Follow the instructions in step 2 to get started.
-
-## 1. Install package via `pip` and perform inference
-
-Coming soon.
-
-## 2. Setting up locally to generate masks sets and train models
-
-### 2.1. Basic Setup
+## Getting Started
 
 To run Stages 1, 2 or 3, you must first perform the basic setup. Start by cloning this GitHub repo:
 ```
@@ -32,12 +16,13 @@ cd segment-select-correct
 You can now install the package and its requirements. Given the outside package dependencies, it is highly recommended that you do this in a separate virtual/conda environment. To create and activate a new Conda environment that supports this execute:
 ```
 conda create -n ssc_ris python=3.7 -y
-conda activate
+conda activate ssc_ris
 ```
 
 The main package installation should be done with (omit `-e` if you do not want to edit the package, though that might cause some file system issues when installing the steps below):
 ```
 pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
+pip install -r requirements.txt
 pip install -e .
 ```
 
@@ -45,16 +30,18 @@ To use this package with RefCOCO, RefCOCO+ or RefCOCOg, you must:
 - Follow instructions from [the LAVT repository](https://github.com/yz93/LAVT-RIS/tree/main/refer) to set up subdirectories and download annotations. The API itself is inside the `ssc` package (`ssc_ris.refer_dataset`), so you can setup the data there or anywhere else in your machine. 
 - [Download images from COCO](https://cocodataset.org/#download) (the link entitled 2014 Train images [83K/13GB]), extract them from the ZIP to a folder `[REFER_DATASET_ROOT]/images/mscoco/images`, where `[REFER_DATASET_ROOT]` is a pointer to the `data` folder of Refer as per the instructions in the previous point.
 
-If you want to run the `Segment` step (Stage 1) of our framework to generate all the instance segmentation masks, you must also download the spaCy dictionary, install GroundingDINO and download the relevant weights. Follow steps 2.1.1., 2.1.2. and 2.1.3. to do that. 
+If you want to run the `Segment` step (Stage 1) of our framework to generate all the instance segmentation masks, you must also download the spaCy dictionary, install GroundingDINO and download the relevant weights. Follow steps 1., 2. and 3. to do that. 
 
-If you want to train models from the `Correct` step (Stage 3), then you must download the Swin transformer pre-trained weights. Follow steps 2.1.4. to do that.
+If you want to train models from the `Correct` step (Stage 3), then you must download the Swin transformer pre-trained weights. Follow steps 4. to do that.
 
-#### 2.1.1. (Stage 1) Download spaCy dictionary
+If you want to perform inference using our pre-trained models, you can download the pre-trained weights from running all stages. Follow steps 5. to do that.
+
+### 1. (Stage 1) Download spaCy dictionary
 ```
 python -m spacy download en_core_web_md
 ```
 
-#### 2.1.2. (Stage 1) Installing GroundingDINO and downloading the weights:
+### 2. (Stage 1) Installing GroundingDINO and downloading the weights:
 
 Clone and install GroundingDINO by running:
 ```
@@ -74,7 +61,7 @@ wget https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alp
 cd ../..
 ```
 
-#### 2.1.3. (Stage 1) Downloading the SAM weights:
+### 3. (Stage 1) Downloading the SAM weights:
 
 Making sure you are in within `scripts` folder, execute:
 ```
@@ -83,7 +70,7 @@ cd sam_weights
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
-#### 2.1.4. (Stage 3) Download Swin transformer weights
+### 4. (Stage 3) Download Swin transformer weights
 Inside the `scripts` folder, execute:
 ```
 mkdir train/swin_pretrained_weights
@@ -91,7 +78,12 @@ cd train/swin_pretrained_weights
 wget https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_base_patch4_window12_384_22k.pth
 ```
 
-### 2.2. *Segment*: Generating all the masks
+### 5. (Inference) Run inference with corrected models
+To simply test our pre-trained models (`S+S+C` in the paper), you can download their weights [here](https://drive.google.com/drive/folders/1FHbcVz-HfseheGcRo0SiD3Bq0FDGMqVz), or for the individual models:
+
+| [RefCOCO](https://drive.google.com/file/d/1ZDXktKvNdai-2IPqhzeu5gC9Y1oKilsW/view) | [RefCOCO+](https://drive.google.com/file/d/1vQX2q11C2YK3OQMYFYiCIzzsrUYE5744/view) | [RefCOCOg (U)](https://drive.google.com/file/d/1YB_dDMhpTL541BobN-jKd1ie6enKNHY_/view) | [RefCOCOg (G)](https://drive.google.com/file/d/1ASvev63wODZLQ4xxg7v6z4lebW2opV_G/view) | 
+
+### 2. *Segment*: Generating all the masks
 
 To run the first stage of our framework for the RefCOCO training set, move to the `scripts` folder and execute:
 ```
@@ -101,7 +93,7 @@ where `[REFER_DATASET_ROOT]` is the pointer to the folder `data` of the REFER. T
 
 For help with this script execute `python create_all_masks_dataset.py --help`.
 
-### 2.3. *Select*: Zero-shot instance choice
+### 3. *Select*: Zero-shot instance choice
 
 To run the second stage of our framework for the RefCOCO training set on the `example` masks generated in 2.2. still inside the `scripts` folder execute:
 ```
@@ -111,7 +103,7 @@ This will create an `example_selected` folder inside `select_stage_masks` which 
 
 For help with this script execute `python create_zero_shot_masks_dataset.py --help`.
 
-### 2.4. Testing unsupervised masks
+### 4. Testing unsupervised masks
 
 To test the quality of the masks generated in 2.2. (or 2.3.), run the following script:
 ```
@@ -121,7 +113,7 @@ This will test all of the masks generated in 2.2. using the reverse blur zero-sh
 
 For help with this script execute `python test_unsupervised_masks_dataset.py --help`.
 
-### 2.5. Pre-training or constrained greedy matching
+### 5. Pre-training or constrained greedy matching
 
 To pre-train a model using the zero-shot selected masks from `example_selected` in 2.2., run the following script from inside the `scripts/train`:
 ```
@@ -148,7 +140,7 @@ The only changes between this script and the previous one is that this one inclu
 
 For more help with this script execute `python train_model.py --help`.
 
-### 2.6. Testing a trained model
+### 6. Testing a trained model
 
 To test a trained model on the validation split of RefCOCO, run the following script from inside the `scripts/train`:
 ```
@@ -161,6 +153,18 @@ for the pre-trained model from 2.5., or change `--resume` to `models/refcoco/tes
 
 For more help with this script execute `python test_model.py --help`.
 
-## Contributions and Acknowledgements
+## Citation and Acknowledgements
 
-Coming soon
+If you use `ssc` in your work, please cite the following:
+```
+@misc{eiras2023segment,
+      title={Segment, Select, Correct: A Framework for Weakly-Supervised Referring Segmentation}, 
+      author={Francisco Eiras and Kemal Oksuz and Adel Bibi and Philip H. S. Torr and Puneet K. Dokania},
+      year={2023},
+      eprint={2310.13479},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
+
+This work was supported by the EPSRC Centre for Doctoral Training in Autonomous Intelligent Machines and Systems [EP/S024050/1], by Five AI Limited, by the UKRI grant: Turing AI Fellowship EP/W002981/1, and by the Royal Academy of Engineering under the Research Chair and Senior Research Fellowships scheme.
