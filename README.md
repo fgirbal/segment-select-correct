@@ -52,8 +52,6 @@ If you want to run the `Segment` step (Stage 1) of our framework to generate all
 
 If you want to train models from the `Correct` step (Stage 3), then you must download the Swin transformer pre-trained weights. Follow steps 4. to do that.
 
-If you want to perform inference using our pre-trained models, you can download the pre-trained weights from running all stages. Follow steps 5. to do that.
-
 ### 1. (Stage 1) Download spaCy dictionary
 ```
 python -m spacy download en_core_web_md
