@@ -7,7 +7,7 @@ This is the official repo for the paper [*Segment*, *Select*, *Correct*: A Frame
 
 ## Getting Started
 
-To run Stages 1, 2 or 3, you must first perform the basic setup. Start by cloning this GitHub repo:
+To perform inference or run Stages 1, 2 or 3, you must first perform the basic setup. Start by cloning this GitHub repo:
 ```
 git clone https://github.com/fgirbal/segment-select-correct.git
 cd segment-select-correct
@@ -25,6 +25,24 @@ pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 -f https://download.pyto
 pip install -r requirements.txt
 pip install -e .
 ```
+
+Follow the appropriate instructions below to run inference or run Stages 1, 2, or 3.
+
+## Inference Demo on Example Images
+
+To simply test our pre-trained models (`S+S+C` in the paper) by running inference on images, you can download their weights [here](https://drive.google.com/drive/folders/1FHbcVz-HfseheGcRo0SiD3Bq0FDGMqVz), or for the individual models:
+
+| [RefCOCO](https://drive.google.com/file/d/1ZDXktKvNdai-2IPqhzeu5gC9Y1oKilsW/view) | [RefCOCO+](https://drive.google.com/file/d/1vQX2q11C2YK3OQMYFYiCIzzsrUYE5744/view) | [RefCOCOg (U)](https://drive.google.com/file/d/1YB_dDMhpTL541BobN-jKd1ie6enKNHY_/view) | [RefCOCOg (G)](https://drive.google.com/file/d/1ASvev63wODZLQ4xxg7v6z4lebW2opV_G/view) | 
+|---|---|---|---|
+
+To perform inference on example images from the `examples` folder (or others in your machine), from the main directory simply run for example:
+```
+python examples/inference_demo.py --model-checkpoint [PATH_TO_MODEL_CHECKPOINT] --sentence "man in blue" --input-image examples/image_1.jpg
+```
+which, given the RefCOCO corrected model from above should generate the following output:
+![Three-Stage Framework](examples/output_image_1_refcoco.png)
+
+## Running Stages 1, 2 and 3
 
 To use this package with RefCOCO, RefCOCO+ or RefCOCOg, you must:
 - Follow instructions from [the LAVT repository](https://github.com/yz93/LAVT-RIS/tree/main/refer) to set up subdirectories and download annotations. The API itself is inside the `ssc` package (`ssc_ris.refer_dataset`), so you can setup the data there or anywhere else in your machine. 
@@ -78,12 +96,7 @@ cd train/swin_pretrained_weights
 wget https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_base_patch4_window12_384_22k.pth
 ```
 
-### 5. (Inference) Run inference with corrected models
-To simply test our pre-trained models (`S+S+C` in the paper), you can download their weights [here](https://drive.google.com/drive/folders/1FHbcVz-HfseheGcRo0SiD3Bq0FDGMqVz), or for the individual models:
-
-| [RefCOCO](https://drive.google.com/file/d/1ZDXktKvNdai-2IPqhzeu5gC9Y1oKilsW/view) | [RefCOCO+](https://drive.google.com/file/d/1vQX2q11C2YK3OQMYFYiCIzzsrUYE5744/view) | [RefCOCOg (U)](https://drive.google.com/file/d/1YB_dDMhpTL541BobN-jKd1ie6enKNHY_/view) | [RefCOCOg (G)](https://drive.google.com/file/d/1ASvev63wODZLQ4xxg7v6z4lebW2opV_G/view) | 
-
-### 2. *Segment*: Generating all the masks
+## 2. *Segment*: Generating all the masks
 
 To run the first stage of our framework for the RefCOCO training set, move to the `scripts` folder and execute:
 ```
@@ -93,7 +106,7 @@ where `[REFER_DATASET_ROOT]` is the pointer to the folder `data` of the REFER. T
 
 For help with this script execute `python create_all_masks_dataset.py --help`.
 
-### 3. *Select*: Zero-shot instance choice
+## 3. *Select*: Zero-shot instance choice
 
 To run the second stage of our framework for the RefCOCO training set on the `example` masks generated in 2.2. still inside the `scripts` folder execute:
 ```
@@ -103,7 +116,7 @@ This will create an `example_selected` folder inside `select_stage_masks` which 
 
 For help with this script execute `python create_zero_shot_masks_dataset.py --help`.
 
-### 4. Testing unsupervised masks
+## 4. Testing unsupervised masks
 
 To test the quality of the masks generated in 2.2. (or 2.3.), run the following script:
 ```
@@ -113,7 +126,7 @@ This will test all of the masks generated in 2.2. using the reverse blur zero-sh
 
 For help with this script execute `python test_unsupervised_masks_dataset.py --help`.
 
-### 5. Pre-training or constrained greedy matching
+## 5. Pre-training or constrained greedy matching
 
 To pre-train a model using the zero-shot selected masks from `example_selected` in 2.2., run the following script from inside the `scripts/train`:
 ```
@@ -140,7 +153,7 @@ The only changes between this script and the previous one is that this one inclu
 
 For more help with this script execute `python train_model.py --help`.
 
-### 6. Testing a trained model
+## 6. Testing a trained model
 
 To test a trained model on the validation split of RefCOCO, run the following script from inside the `scripts/train`:
 ```
